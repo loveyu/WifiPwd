@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/item_list">
+
+    <TextView
+        style="@style/item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/wifi_ssid"
+        android:id="@+id/textView_ssid"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView_i_ssid"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView_ssid"
+        android:layout_toEndOf="@+id/textView_ssid"
+        android:layout_marginLeft="1dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        style="@style/item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/password"
+        android:id="@+id/textView_pwd"
+        android:layout_below="@+id/textView_ssid"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView_i_pwd"
+        android:layout_marginLeft="1dp"
+        android:layout_below="@+id/textView_i_ssid"
+        android:layout_toRightOf="@+id/textView_pwd"
+        android:layout_toEndOf="@+id/textView_pwd"
+        android:layout_alignRight="@+id/textView_i_ssid"
+        android:layout_alignEnd="@+id/textView_i_ssid" />
+</RelativeLayout>

@@ -1,0 +1,19 @@
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# 移除部分系统目录
+.git/
+.idea/
+.gradle/
+build/
+gradle/
+app/build/
+local.properties
