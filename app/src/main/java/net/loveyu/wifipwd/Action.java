@@ -3,22 +3,28 @@ package net.loveyu.wifipwd;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+/**
+ * 操作类
+ */
 public class Action {
+
     private Context context;
 
     public Action(Context context) {
         this.context = context;
     }
 
+    /**
+     * 获取热点和密码列表
+     * @return 异常时返回NULL
+     */
     public ArrayList<String[]> get_list() {
         ArrayList<String[]> list = new ArrayList<String[]>();
         try {
