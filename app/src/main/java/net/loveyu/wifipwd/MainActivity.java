@@ -19,11 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
+import java.util.Map;
 
 public class MainActivity extends Activity {
 
-    private ArrayList<String[]> list;
+    private ArrayList<Map<String, String>> list;
     private Handler handler;
     final static int VersionUpdate = 1;
     final static int OpenUri = 2;
@@ -51,7 +51,8 @@ public class MainActivity extends Activity {
                         }
                     });
                     registerForContextMenu(lv);
-                    tv.setText(getString(R.string.wifi_list_number) + list.size());
+                    String text = getString(R.string.wifi_list_number) + list.size();
+                    tv.setText(text);
                 }
             }
         } else {
@@ -110,15 +111,15 @@ public class MainActivity extends Activity {
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         switch (item.getItemId()) {
             case R.string.copy_password:
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView)[1]));
+                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("psk")));
                 break;
             case R.string.copy_ssid:
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView)[0]));
+                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("ssid")));
                 break;
             case R.string.copy_ssid_and_password:
-                String[] s = list.get(indexListView);
+                Map<String, String> s = list.get(indexListView);
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(null,
-                        getString(R.string.wifi_ssid) + s[0] + "\n" + getString(R.string.password) + s[1]));
+                        getString(R.string.wifi_ssid) + s.get("ssid") + "\n" + getString(R.string.password) + s.get("psk")));
                 break;
             default:
                 return false;

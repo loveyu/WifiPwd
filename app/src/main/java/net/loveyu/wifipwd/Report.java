@@ -124,6 +124,7 @@ public class Report implements Runnable {
             }
         } catch (JSONException e) {
             Log.e("JsonError", "Parse json error.");
+            Log.e("JsonError", e.getMessage());
         }
     }
 
