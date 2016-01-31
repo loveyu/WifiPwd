@@ -16,7 +16,6 @@
     <string name="copy_password">复制密码</string>
     <string name="copy_ssid_and_password">复制热点密码</string>
     <string name="already_copy">已复制</string>
-    <string name="found_version_update">发现新版本</string>
-    <string name="update_now">立即更新</string>
+    <string name="open_source">开放源码</string>
 
 </resources>

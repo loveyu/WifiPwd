@@ -9,4 +9,8 @@
         android:title="@string/action_help"
         android:orderInCategory="50"
         android:showAsAction="never" />
+    <item android:id="@+id/open_source"
+        android:title="@string/open_source"
+        android:orderInCategory="50"
+        android:showAsAction="never" />
 </menu>
