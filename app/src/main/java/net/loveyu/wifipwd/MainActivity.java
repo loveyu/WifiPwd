@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.ClipboardManager;
-import android.os.Handler;
-import android.os.Message;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,12 +20,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MainActivity extends Activity {
-
     private ArrayList<Map<String, String>> list;
-    private Handler handler;
-    final static int VersionUpdate = 1;
-    final static int OpenUri = 2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,33 +51,6 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_no_root);
         }
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case VersionUpdate:
-                        ((Report) msg.obj).open_dialog(MainActivity.this);
-                        break;
-                    case OpenUri:
-                        open_url((String) msg.obj);
-                        break;
-                }
-            }
-        };
-        new Thread(new Report(this, "http://www.loveyu.net/Update/WifiPwd.php")).start();
-    }
-
-    public void NotifyVersionUpdate(Report report) {
-        Message msg = handler.obtainMessage(VersionUpdate);
-        msg.obj = report;
-        handler.sendMessage(msg);
-    }
-
-    public void NotifyOpenUri(String uri) {
-        Message msg = handler.obtainMessage(OpenUri);
-        msg.obj = uri;
-        handler.sendMessage(msg);
     }
 
     private void open_url(String url) {
