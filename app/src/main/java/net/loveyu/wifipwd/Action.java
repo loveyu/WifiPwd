@@ -1,8 +1,12 @@
 package net.loveyu.wifipwd;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,24 +29,10 @@ public class Action {
      *
      * @return 异常时返回NULL
      */
-    public ArrayList<Map<String,String>> get_list() {
+    public ArrayList<Map<String, String>> get_list() {
         try {
-            final File cacheDir = context.getCacheDir();
-            System.setProperty("java.io.tmpdir", cacheDir.getAbsolutePath()); // line 3979
-            String path = cacheDir.getPath();
-            if (run_cmd("cp /data/misc/wifi/wpa_supplicant.conf " + path)) {
-                path += "/wpa_supplicant.conf";
-                run_cmd("chmod 777 " + path);
-                ReadWpaCfg cfg = new ReadWpaCfg(path);
-                if (!new File(path).delete()) {
-                    Log.e("Delete", "cache file delete error.");
-                }
-                return cfg.getPasswordList();
-            } else {
-                Log.e("CP", "copy file error.");
-                Toast.makeText(context, context.getString(R.string.can_no_read_file), Toast.LENGTH_LONG).show();
-                return null;
-            }
+            ReadWpaCfg cfg = new ReadWpaCfg("/data/misc/wifi/wpa_supplicant.conf");
+            return cfg.getPasswordList();
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("Read", e.getMessage());

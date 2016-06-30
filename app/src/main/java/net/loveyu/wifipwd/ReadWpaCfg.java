@@ -1,8 +1,12 @@
 package net.loveyu.wifipwd;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,16 +23,31 @@ public class ReadWpaCfg {
 
     public ReadWpaCfg(String path) throws IOException {
         list = new ArrayList<Map<String, String>>();
-        BufferedReader fr = new BufferedReader(new FileReader(path));
-        String content = "", s;
-        while ((s = fr.readLine()) != null) {
-            s = s.trim();
-            if ("".equals(s)) {
-                continue;
+        String s = "";
+        DataOutputStream os = null;
+        BufferedReader in = null;
+        try {
+            Process p = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(p.getOutputStream());
+            os.writeBytes("cat " + path + "\n");
+            os.writeBytes("exit\n");
+            os.flush();
+            in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                s += line.trim() + "\n";
             }
-            content += s + "\n";
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+            if (in != null) {
+                in.close();
+            }
         }
-        parse(content);
+        parse(s);
     }
 
     private void parse(String content) {
