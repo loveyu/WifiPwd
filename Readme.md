@@ -5,3 +5,5 @@
 详细介绍: https://www.loveyu.net/WifiPwd
 
 讨论交流: https://www.loveyu.org/3356.html
+
+Google Play 下载： https://play.google.com/store/apps/details?id=net.loveyu.wifipwd
