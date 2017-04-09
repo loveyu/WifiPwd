@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                 finish();
                 return true;
             case R.id.action_help:
-                open_url("https://www.loveyu.org/3356.html?from=android_wifipwd&v=1.2");
+                open_url("https://www.loveyu.org/3356.html?from=android_wifipwd&v=1.3");
                 return true;
             case R.id.open_source:
                 open_url("https://github.com/loveyu/WifiPwd");

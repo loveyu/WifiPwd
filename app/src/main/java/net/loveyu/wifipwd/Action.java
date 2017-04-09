@@ -27,7 +27,7 @@ public class Action {
     public ArrayList<Map<String, String>> get_list() {
         try {
             ReadWpaCfg cfg = new ReadWpaCfg("/data/misc/wifi/wpa_supplicant.conf");
-            return cfg.getPasswordList();
+            return cfg.getPasswordList(this.context);
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("Read", e.getMessage());
