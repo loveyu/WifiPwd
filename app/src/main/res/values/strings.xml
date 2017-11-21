@@ -17,5 +17,7 @@
     <string name="copy_ssid_and_password">复制热点密码</string>
     <string name="already_copy">已复制</string>
     <string name="open_source">开放源码</string>
+    <string name="refresh_list">刷新列表</string>
+    <string name="refresh_success">刷新成功</string>
 
 </resources>

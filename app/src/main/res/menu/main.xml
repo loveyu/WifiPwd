@@ -11,6 +11,10 @@
         android:showAsAction="never" />
     <item android:id="@+id/open_source"
         android:title="@string/open_source"
-        android:orderInCategory="50"
+        android:orderInCategory="20"
+        android:showAsAction="never" />
+    <item android:id="@+id/refresh_list"
+        android:title="@string/refresh_list"
+        android:orderInCategory="10"
         android:showAsAction="never" />
 </menu>
