@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.ClipboardManager;
 import android.view.ContextMenu;
@@ -30,6 +32,8 @@ public class MainActivity extends Activity {
 
     private ListView lv;
 
+    private int log = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class MainActivity extends Activity {
             } else {
                 is_root_check = true;
                 wifiAdapter = new WifiAdapter(this, list);
+                registerWifiChange();
                 if (list.size() == 0) {
                     tv.setText(getString(R.string.wifi_list_is_empty));
                 } else {
@@ -64,7 +69,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void refresh_list() {
+    private void registerWifiChange() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(new WifiReceiver(this), filter);
+    }
+
+    public void refresh_list(boolean showNotify) {
+        if (log++ == 0) {
+            //first not log
+            return;
+        }
         if (!is_root_check) {
             Toast.makeText(this, getString(R.string.can_not_root_permission), Toast.LENGTH_SHORT).show();
             return;
@@ -72,16 +87,26 @@ public class MainActivity extends Activity {
         list = ac.get_list();
         if (list == null) {
             Toast.makeText(this, getString(R.string.read_wifi_list_error), Toast.LENGTH_SHORT).show();
+            return;
         } else {
             if (list.size() == 0) {
                 Toast.makeText(this, getString(R.string.wifi_list_is_empty), Toast.LENGTH_SHORT).show();
+                return;
             } else {
                 wifiAdapter.list = list;
                 lv.setAdapter(wifiAdapter);
             }
         }
         lv.deferNotifyDataSetChanged();
-        Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
+        if (showNotify) {
+            Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh_list(false);
     }
 
     private void open_url(String url) {
@@ -146,7 +171,7 @@ public class MainActivity extends Activity {
                 open_url("https://github.com/loveyu/WifiPwd");
                 return true;
             case R.id.refresh_list:
-                refresh_list();
+                refresh_list(true);
                 return true;
         }
         return super.onOptionsItemSelected(item);

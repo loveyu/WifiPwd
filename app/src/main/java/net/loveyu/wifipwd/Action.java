@@ -15,8 +15,11 @@ public class Action {
 
     private Context context;
 
+    private ReadWpaCfg cfg;
+
     public Action(Context context) {
         this.context = context;
+        this.cfg = new ReadWpaCfg("/data/misc/wifi/wpa_supplicant.conf");
     }
 
     /**
@@ -26,7 +29,7 @@ public class Action {
      */
     public ArrayList<Map<String, String>> get_list() {
         try {
-            ReadWpaCfg cfg = new ReadWpaCfg("/data/misc/wifi/wpa_supplicant.conf");
+            cfg.read();
             return cfg.getPasswordList(this.context);
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();

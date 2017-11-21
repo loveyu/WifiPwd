@@ -24,19 +24,30 @@ import java.util.regex.Pattern;
 public class ReadWpaCfg {
     ArrayList<Map<String, String>> list;
 
-    public ReadWpaCfg(String path) throws IOException {
+    private Process p = null;
+
+    private String path;
+
+    public ReadWpaCfg(String path) {
         list = new ArrayList<Map<String, String>>();
+        this.path = path;
+    }
+
+    public void read() throws IOException {
         String s = "";
         DataOutputStream os = null;
         BufferedReader in = null;
+
         try {
-            Process p = Runtime.getRuntime().exec("su");
+            if (p == null) {
+                p = Runtime.getRuntime().exec("su");
+            }
             os = new DataOutputStream(p.getOutputStream());
             os.writeBytes("cat " + path + "\n");
             os.writeBytes("exit\n");
             os.flush();
             in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = null;
+            String line;
             while ((line = in.readLine()) != null) {
                 s += line.trim() + "\n";
             }
