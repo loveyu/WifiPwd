@@ -5,6 +5,8 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -181,7 +183,7 @@ public class MainActivity extends Activity {
                 finish();
                 return true;
             case R.id.action_help:
-                open_url("https://www.loveyu.org/3356.html?from=android_wifipwd&v=1.4");
+                open_url("https://www.loveyu.org/3356.html?from=android_wifipwd&v=" + getAppVersionName(this));
                 return true;
             case R.id.open_source:
                 open_url("https://github.com/loveyu/WifiPwd");
@@ -191,5 +193,20 @@ public class MainActivity extends Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static String getAppVersionName(Context context) {
+        String versionName = "";
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = pi.versionName;
+            if (versionName == null || versionName.length() <= 0) {
+                return "";
+            }
+        } catch (Exception e) {
+            return "";
+        }
+        return versionName;
     }
 }
