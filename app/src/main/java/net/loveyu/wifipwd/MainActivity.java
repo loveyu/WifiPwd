@@ -5,11 +5,14 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.ClipboardManager;
+import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends Activity {
@@ -38,6 +42,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLocale();
         ac = new Action(this);
         if (ac.check_root()) {
             setContentView(R.layout.activity_main);
@@ -68,6 +73,14 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_no_root);
         }
+    }
+
+    private void setLocale() {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        config.locale = Locale.getDefault();
+        resources.updateConfiguration(config, dm);
     }
 
     private void registerWifiChange() {

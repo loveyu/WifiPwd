@@ -8,7 +8,7 @@
     <string name="notice_reading">Tips: Wifi password is being retrieved</string>
     <string name="read_wifi_list_error">Failed to read the list, please re-try ROOT authorized</string>
     <string name="wifi_list_is_empty">WIFI list with password is empty</string>
-    <string name="wifi_list_number">Get the number of Wifi passwords:</string>
+    <string name="wifi_list_number">Wifi password number: </string>
     <string name="wifi_ssid">Hotspot:</string>
     <string name="password">Password:</string>
     <string name="copy_ssid">copy hotspot</string>

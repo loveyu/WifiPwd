@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wi-Fiパスワードビューア</string>
+    <string name="action_exit">終了</string>
+    <string name="action_help">ヘルプとフィードバック</string>
+    <string name="can_not_root_permission">ROOT権限を取得できません</string>
+    <string name="can_no_read_file"> WIFIパスワードファイルを読み取ることができません</string>
+    <string name="notice_reading">ヒント：Wi-Fiパスワードを取得中</string>
+    <string name="read_wifi_list_error">リストの読み込みに失敗しました.ROOT権限を再試行してください。</string>
+    <string name="wifi_list_is_empty">パスワードが空白のWIFIリスト</string>
+    <string name="wifi_list_number">WiFiパスワードの統計情報：</string>
+    <string name="wifi_ssid">熱點:</string>
+    <string name="password">密碼:</string>
+    <string name="copy_ssid">コピーホットスポット</string>
+    <string name="copy_password">コピーパスワード</string>
+    <string name="copy_ssid_and_password">コピーホットスポットパスワード</string>
+    <string name="already_copy">コピー</string>
+    <string name="open_source">オープンソース</string>
+    <string name="refresh_list">リフレッシュリスト</string>
+    <string name="refresh_success">更新の成功</string>
+</resources>
