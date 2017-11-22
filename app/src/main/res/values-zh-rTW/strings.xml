@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wifi Password Viewer</string>
+    <string name="action_exit">Quit</string>
+    <string name="action_help">Help And Feedback</string>
+    <string name="can_not_root_permission">Unable to get ROOT permission</string>
+    <string name="can_no_read_file">Unable to read WIFI password file</string>
+    <string name="notice_reading">Tips: Wifi password is being retrieved</string>
+    <string name="read_wifi_list_error">Failed to read the list, please re-try ROOT authorized</string>
+    <string name="wifi_list_is_empty">WIFI list with password is empty</string>
+    <string name="wifi_list_number">Get the number of Wifi passwords:</string>
+    <string name="wifi_ssid">Hotspot:</string>
+    <string name="password">Password:</string>
+    <string name="copy_ssid">copy hotspot</string>
+    <string name="copy_password">copy password</string>
+    <string name="copy_ssid_and_password">copy hotspot and password</string>
+    <string name="already_copy">copied</string>
+    <string name="open_source">Open Source</string>
+    <string name="refresh_list">Refresh list</string>
+    <string name="refresh_success">Refresh successful</string>
+</resources>
