@@ -3,6 +3,7 @@ package net.loveyu.wifipwd;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -43,25 +44,35 @@ public class ReadWpaCfg {
                 p = Runtime.getRuntime().exec("su");
             }
             os = new DataOutputStream(p.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             os.writeBytes("cat " + path + "\n");
+            os.flush();
             os.writeBytes("exit\n");
             os.flush();
-            in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 s += line.trim() + "\n";
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+            Log.e("Read", e.getMessage());
+        }
+        try {
             if (os != null) {
                 os.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             if (in != null) {
                 in.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         parse(s);
+
     }
 
     private void parse(String content) {

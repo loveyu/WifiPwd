@@ -34,6 +34,7 @@ public class Action {
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e("Read", e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
