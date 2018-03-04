@@ -58,21 +58,25 @@ public class ReadWpaCfg {
             Log.e("Read", e.getMessage());
         }
         try {
-            if (os != null) {
-                os.close();
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Throwable e) {
             e.printStackTrace();
         }
-        try {
-            if (in != null) {
-                in.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        parse(s);
 
+        parse(s);
     }
 
     private void parse(String content) {
