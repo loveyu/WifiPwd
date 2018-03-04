@@ -30,10 +30,7 @@ public class MsgHandle extends Handler {
         switch (msg.what) {
             case WpListUpdate:
                 ListMsgData data = (ListMsgData) msg.obj;
-
                 mainActivity.setList(data.list);
-                Toast.makeText(this.mainActivity, "Test: " + data.list.size(), Toast.LENGTH_SHORT).show();
-
                 if (data.is_refresh) {
                     mainActivity.refreshLvList();
                 }
