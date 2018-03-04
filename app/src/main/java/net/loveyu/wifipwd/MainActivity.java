@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.ClipboardManager;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -33,7 +35,7 @@ public class MainActivity extends Activity {
 
     private boolean is_root_check = false;
 
-    private WifiAdapter wifiAdapter;
+    private WifiAdapter wifiAdapter = null;
 
     private Action ac;
 
@@ -41,39 +43,48 @@ public class MainActivity extends Activity {
 
     private int log = 0;
 
+    public MsgHandle handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLocale();
         ac = new Action(this);
+        handler = new MsgHandle(this, ac);
+
         if (ac.check_root()) {
             setContentView(R.layout.activity_main);
-            list = ac.get_list();
-            TextView tv = (TextView) findViewById(R.id.textViewNotice);
-            if (list == null) {
-                tv.setText(getString(R.string.read_wifi_list_error));
-            } else {
-                is_root_check = true;
-                wifiAdapter = new WifiAdapter(this, list);
-                registerWifiChange();
-                if (list.size() == 0) {
-                    tv.setText(getString(R.string.wifi_list_is_empty));
-                } else {
-                    lv = (ListView) findViewById(R.id.listView);
-                    lv.setAdapter(wifiAdapter);
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            view.showContextMenu();
-                        }
-                    });
-                    registerForContextMenu(lv);
-                    String text = getString(R.string.wifi_list_number) + list.size();
-                    tv.setText(text);
-                }
-            }
+            registerWifiChange();
+            handler.startReadList(false);
         } else {
             setContentView(R.layout.activity_no_root);
+        }
+    }
+
+    public void setList(ArrayList<Map<String, String>> list) {
+        TextView tv = (TextView) findViewById(R.id.textViewNotice);
+        if (list == null) {
+            tv.setText(getString(R.string.read_wifi_list_error));
+        } else {
+            is_root_check = true;
+            if (wifiAdapter == null) {
+                wifiAdapter = new WifiAdapter(this, list);
+            }
+            if (list.size() == 0) {
+                tv.setText(getString(R.string.wifi_list_is_empty));
+            } else {
+                lv = (ListView) findViewById(R.id.listView);
+                lv.setAdapter(wifiAdapter);
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        view.showContextMenu();
+                    }
+                });
+                registerForContextMenu(lv);
+                String text = getString(R.string.wifi_list_number) + list.size();
+                tv.setText(text);
+            }
         }
     }
 
@@ -94,31 +105,21 @@ public class MainActivity extends Activity {
     }
 
     public void refresh_list(boolean showNotify) {
-        if (log++ == 0) {
-            //first not log
-            return;
-        }
-        if (!is_root_check) {
-            Toast.makeText(this, getString(R.string.can_not_root_permission), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        list = ac.get_list();
-        if (list == null) {
-            Toast.makeText(this, getString(R.string.read_wifi_list_error), Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            if (list.size() == 0) {
-                Toast.makeText(this, getString(R.string.wifi_list_is_empty), Toast.LENGTH_SHORT).show();
-                return;
-            } else {
-                wifiAdapter.list = list;
-                lv.setAdapter(wifiAdapter);
-            }
-        }
+//        if (log++ == 0) {
+//            //first not log
+//            return;
+//        }
+//        if (!handler.startReadList(true)) {
+//            return;
+//        }
+//        if (!is_root_check) {
+//            Toast.makeText(this, getString(R.string.can_not_root_permission), Toast.LENGTH_SHORT).show();
+//        }
+    }
+
+    public void refreshLvList() {
         lv.deferNotifyDataSetChanged();
-        if (showNotify) {
-            Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -1,23 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "net.loveyu.wifipwd"
         minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 6
-        versionName '1.5'
-    }
-    productFlavors {
-    }
-    dexOptions {
-        incremental false
+        versionCode 7
+        versionName '1.6'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    dexOptions {
+        incremental false
+    }
+    productFlavors {
     }
 }
 

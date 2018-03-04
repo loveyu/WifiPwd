@@ -33,12 +33,9 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class ReadWpaCfg {
     ArrayList<Map<String, String>> list;
-
     private Process p = null;
-
     private String wpa_config_path;
     private String WifiConfigStore_path;
-
     private boolean need_read_wap_config = false;
 
     ReadWpaCfg(String wpa_supplicant_path, String WifiConfigStorePath) {
@@ -81,6 +78,13 @@ public class ReadWpaCfg {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("ReadEX", e.getMessage());
+        } finally {
+            try {
+                if (in != null) in.close();
+                if (os != null) os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 //        close_io_stream(in, os);
         String new_str = s.toString();
@@ -131,16 +135,14 @@ public class ReadWpaCfg {
                             psk = value;
                         }
                     }
-//                    Log.i("Read", "SSID: " + ssid + ", PSK:" + psk);
                     add_kv(ssid, psk);
                 }
             }
-            is.close();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
             e.printStackTrace();
         }
     }
@@ -164,43 +166,28 @@ public class ReadWpaCfg {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("Read", e.getMessage());
+        } finally {
+            try {
+                if (in != null) in.close();
+                if (os != null) os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        close_io_stream(in, os);
         parse(s.toString());
-    }
-
-    private void close_io_stream(BufferedReader in, DataOutputStream os) {
-        try {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
     }
 
     private void parse(String content) {
         Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n\\}");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
-            add_kv(matcher.group());
+            add(matcher.group());
         }
     }
 
-    private void add_kv(String content) {
-        String[] list = content.split("\\n");
+    private void add(String content) {
         content = content.substring(9, content.length() - 2);
+        String[] list = content.split("\\n");
         HashMap<String, String> map = new HashMap<String, String>();
         String k, v;
         for (String info : list) {
@@ -258,11 +245,11 @@ public class ReadWpaCfg {
      */
     public ArrayList<Map<String, String>> getPasswordList(Context context) {
         ArrayList<Map<String, String>> rt = new ArrayList<Map<String, String>>();
-        for (Map<String, String> map : this.list) {
-            if (map.containsKey("psk") && map.containsKey("ssid")) {
-                rt.add(map);
-            }
-        }
+//        for (Map<String, String> map : this.list) {
+//            if (map.containsKey("psk") && map.containsKey("ssid")) {
+//                rt.add(map);
+//            }
+//        }
         return this.sortPasswordList(rt, context);
     }
 
