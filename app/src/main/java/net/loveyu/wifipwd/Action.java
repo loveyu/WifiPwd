@@ -19,7 +19,10 @@ public class Action {
 
     public Action(Context context) {
         this.context = context;
-        this.cfg = new ReadWpaCfg("/data/misc/wifi/wpa_supplicant.conf");
+        this.cfg = new ReadWpaCfg(
+                "/data/misc/wifi/wpa_supplicant.conf",
+                "/data/misc/wifi/WifiConfigStore.xml"
+        );
     }
 
     /**

@@ -5,18 +5,27 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * 读取配置文件信息
@@ -27,36 +36,140 @@ public class ReadWpaCfg {
 
     private Process p = null;
 
-    private String path;
+    private String wpa_config_path;
+    private String WifiConfigStore_path;
 
-    public ReadWpaCfg(String path) {
+    private boolean need_read_wap_config = false;
+
+    ReadWpaCfg(String wpa_supplicant_path, String WifiConfigStorePath) {
         list = new ArrayList<Map<String, String>>();
-        this.path = path;
+        this.wpa_config_path = wpa_supplicant_path;
+        this.WifiConfigStore_path = WifiConfigStorePath;
     }
 
-    public void read() throws IOException {
-        String s = "";
+    public void read() {
+        need_read_wap_config = false;
+        read_xml_config();
+        if (need_read_wap_config) {
+            read_wpa_config();
+        }
+    }
+
+    private Process get_su_process() throws IOException {
+        if (p == null) {
+            p = Runtime.getRuntime().exec("su");
+        }
+        return p;
+    }
+
+    private void read_xml_config() {
+        StringBuilder s = new StringBuilder("");
         DataOutputStream os = null;
         BufferedReader in = null;
-
         try {
-            if (p == null) {
-                p = Runtime.getRuntime().exec("su");
-            }
-            os = new DataOutputStream(p.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            os.writeBytes("cat " + path + "\n");
+            Process process = get_su_process();
+            os = new DataOutputStream(process.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            os.writeBytes("cat " + WifiConfigStore_path + "\n");
             os.flush();
             os.writeBytes("exit\n");
             os.flush();
             String line;
             while ((line = in.readLine()) != null) {
-                s += line.trim() + "\n";
+                s.append(line.trim()).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ReadEX", e.getMessage());
+        }
+//        close_io_stream(in, os);
+        String new_str = s.toString();
+        if ("".equals(new_str)) {
+            need_read_wap_config = true;
+            return;
+        }
+        parse_xml(new_str);
+    }
+
+    private void parse_xml(String xml) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        ByteArrayInputStream is;
+        try {
+            is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(is);
+            Element root = document.getDocumentElement();
+            NodeList items = root.getElementsByTagName("NetworkList");
+            if (items.getLength() > 0) {
+                NodeList network_list = ((Element) items.item(0)).getElementsByTagName("Network");
+                for (int i = 0; i < network_list.getLength(); i++) {
+                    NodeList item = ((Element) network_list.item(i)).getElementsByTagName("WifiConfiguration");
+                    if (item.getLength() < 1) {
+                        continue;
+                    }
+                    Element elem = (Element) (item.item(0));
+                    NodeList wp_node_list = elem.getElementsByTagName("string");
+                    if (wp_node_list.getLength() < 2) {
+                        continue;
+                    }
+                    String ssid = "";
+                    String psk = "";
+
+                    for (int j = 0; j < wp_node_list.getLength(); j++) {
+                        Element e = (Element) wp_node_list.item(j);
+                        String name = e.getAttribute("name");
+                        String value = e.getFirstChild().getNodeValue();
+                        if ("SSID".equals(name)) {
+                            ssid = value;
+                        } else if ("PreSharedKey".equals(name)) {
+                            psk = value;
+                        }
+                    }
+//                    Log.i("Read", "SSID: " + ssid + ", PSK:" + psk);
+                    add_kv(ssid, psk);
+                }
+            }
+            is.close();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void read_wpa_config() {
+        StringBuilder s = new StringBuilder("");
+        DataOutputStream os = null;
+        BufferedReader in = null;
+        try {
+            Process process = get_su_process();
+            os = new DataOutputStream(process.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            os.writeBytes("cat " + wpa_config_path + "\n");
+            os.flush();
+            os.writeBytes("exit\n");
+            os.flush();
+            String line;
+            while ((line = in.readLine()) != null) {
+                s.append(line.trim()).append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("Read", e.getMessage());
         }
+        close_io_stream(in, os);
+        parse(s.toString());
+    }
+
+    private void close_io_stream(BufferedReader in, DataOutputStream os) {
         try {
             try {
                 if (os != null) {
@@ -75,22 +188,20 @@ public class ReadWpaCfg {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
-        parse(s);
     }
 
     private void parse(String content) {
         Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n\\}");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
-            add(matcher.group());
+            add_kv(matcher.group());
         }
     }
 
-    private void add(String content) {
+    private void add_kv(String content) {
+        String[] list = content.split("\\n");
         content = content.substring(9, content.length() - 2);
         HashMap<String, String> map = new HashMap<String, String>();
-        String[] list = content.split("\\n");
         String k, v;
         for (String info : list) {
             int index = info.indexOf("=");
@@ -114,6 +225,28 @@ public class ReadWpaCfg {
             }
             map.put(k, v);
         }
+        this.list.add(map);
+    }
+
+    private void add_kv(String ssid, String psk) {
+        if (ssid == null || psk == null || "".equals(ssid) || psk.equals("")) {
+            return;
+        }
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        if (ssid.charAt(0) == '"') {
+            ssid = ssid.substring(1, ssid.length() - 1);
+        } else {
+            ssid = convertUTF8ToString(ssid);
+        }
+        if ("".equals(ssid)) {
+            return;
+        }
+        psk = psk.substring(1, psk.length() - 1);
+        if ("".equals(psk)) {
+            return;
+        }
+        map.put(ssid, psk);
         this.list.add(map);
     }
 
