@@ -233,7 +233,8 @@ public class ReadWpaCfg {
         if ("".equals(psk)) {
             return;
         }
-        map.put(ssid, psk);
+        map.put("ssid", ssid);
+        map.put("psk", psk);
         this.list.add(map);
     }
 
@@ -245,11 +246,11 @@ public class ReadWpaCfg {
      */
     public ArrayList<Map<String, String>> getPasswordList(Context context) {
         ArrayList<Map<String, String>> rt = new ArrayList<Map<String, String>>();
-//        for (Map<String, String> map : this.list) {
-//            if (map.containsKey("psk") && map.containsKey("ssid")) {
-//                rt.add(map);
-//            }
-//        }
+        for (Map<String, String> map : this.list) {
+            if (map.containsKey("psk") && map.containsKey("ssid")) {
+                rt.add(map);
+            }
+        }
         return this.sortPasswordList(rt, context);
     }
 

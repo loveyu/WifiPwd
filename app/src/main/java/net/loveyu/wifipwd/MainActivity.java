@@ -105,16 +105,16 @@ public class MainActivity extends Activity {
     }
 
     public void refresh_list(boolean showNotify) {
-//        if (log++ == 0) {
-//            //first not log
-//            return;
-//        }
-//        if (!handler.startReadList(true)) {
-//            return;
-//        }
-//        if (!is_root_check) {
-//            Toast.makeText(this, getString(R.string.can_not_root_permission), Toast.LENGTH_SHORT).show();
-//        }
+        if (log++ == 0) {
+            //first not log
+            return;
+        }
+        if (!handler.startReadList(true)) {
+            return;
+        }
+        if (!is_root_check) {
+            Toast.makeText(this, getString(R.string.can_not_root_permission), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void refreshLvList() {

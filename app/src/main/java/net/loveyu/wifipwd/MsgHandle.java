@@ -29,10 +29,10 @@ public class MsgHandle extends Handler {
         super.handleMessage(msg);
         switch (msg.what) {
             case WpListUpdate:
-                Toast.makeText(this.mainActivity, "Test", Toast.LENGTH_SHORT).show();
                 ListMsgData data = (ListMsgData) msg.obj;
 
                 mainActivity.setList(data.list);
+                Toast.makeText(this.mainActivity, "Test: " + data.list.size(), Toast.LENGTH_SHORT).show();
 
                 if (data.is_refresh) {
                     mainActivity.refreshLvList();
