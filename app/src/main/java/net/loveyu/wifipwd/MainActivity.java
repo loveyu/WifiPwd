@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void refreshLvList(ArrayList<Map<String, String>> list) {
+    public void refreshLvList(ArrayList<Map<String, String>> list, boolean show_notify) {
         if (list == null) {
             Toast.makeText(this, getString(R.string.read_wifi_list_error), Toast.LENGTH_SHORT).show();
             return;
@@ -131,7 +131,9 @@ public class MainActivity extends Activity {
             }
         }
         lv.deferNotifyDataSetChanged();
-        Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
+        if (show_notify) {
+            Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

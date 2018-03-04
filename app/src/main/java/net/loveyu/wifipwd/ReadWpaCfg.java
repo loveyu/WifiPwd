@@ -44,9 +44,14 @@ public class ReadWpaCfg {
         this.WifiConfigStore_path = WifiConfigStorePath;
     }
 
-    public void read() {
-        if (list.size() > 0) {
-            return;
+    /**
+     * @param force_refresh 是否强制刷新
+     */
+    public void read(boolean force_refresh) {
+        if (!force_refresh) {
+            if (list.size() > 0) {
+                return;
+            }
         }
         need_read_wap_config = false;
         read_xml_config();

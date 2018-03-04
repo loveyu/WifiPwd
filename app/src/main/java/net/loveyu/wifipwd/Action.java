@@ -30,9 +30,9 @@ public class Action {
      *
      * @return 异常时返回NULL
      */
-    public ArrayList<Map<String, String>> get_list() {
+    public ArrayList<Map<String, String>> get_list(boolean force_refresh) {
         try {
-            cfg.read();
+            cfg.read(force_refresh);
             return cfg.getPasswordList(this.context);
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();

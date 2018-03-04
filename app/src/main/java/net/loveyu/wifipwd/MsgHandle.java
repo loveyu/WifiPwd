@@ -31,7 +31,7 @@ public class MsgHandle extends Handler {
             case WpListUpdate:
                 ListMsgData data = (ListMsgData) msg.obj;
                 if (data.is_refresh) {
-                    mainActivity.refreshLvList(data.list);
+                    mainActivity.refreshLvList(data.list, data.show_notify);
                 } else {
                     mainActivity.setList(data.list);
                 }
@@ -40,12 +40,12 @@ public class MsgHandle extends Handler {
         }
     }
 
-    public boolean startReadList(boolean is_refresh,boolean show_notify) {
+    public boolean startReadList(boolean is_refresh, boolean show_notify) {
         if (!read_list_is_finish) {
             return false;
         }
         read_list_is_finish = false;
-        new Thread(new readRunnable(this,is_refresh,show_notify)).start();
+        new Thread(new readRunnable(this, is_refresh, show_notify)).start();
         return true;
     }
 }

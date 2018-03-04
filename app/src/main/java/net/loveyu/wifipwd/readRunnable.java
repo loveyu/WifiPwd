@@ -18,9 +18,10 @@ public class readRunnable implements Runnable {
 
     @Override
     public void run() {
-        Message msg = handle.obtainMessage(handle.WpListUpdate);
-        ArrayList<Map<String, String>> list = handle.ac.get_list();
-        msg.obj = new ListMsgData(is_refresh, list);
+        Message msg = handle.obtainMessage(MsgHandle.WpListUpdate);
+        //if need notify, force refresh
+        ArrayList<Map<String, String>> list = handle.ac.get_list(show_notify);
+        msg.obj = new ListMsgData(is_refresh, list, show_notify);
         handle.sendMessage(msg);
     }
 }
