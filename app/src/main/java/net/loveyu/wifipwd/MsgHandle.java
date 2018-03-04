@@ -14,7 +14,7 @@ public class MsgHandle extends Handler {
     public MainActivity mainActivity;
     public Action ac;
 
-    private final static int WpListUpdate = 1;
+    public final static int WpListUpdate = 1;
 
     private boolean read_list_is_finish = true;
 
@@ -30,31 +30,22 @@ public class MsgHandle extends Handler {
         switch (msg.what) {
             case WpListUpdate:
                 ListMsgData data = (ListMsgData) msg.obj;
-                mainActivity.setList(data.list);
                 if (data.is_refresh) {
-                    mainActivity.refreshLvList();
+                    mainActivity.refreshLvList(data.list);
+                } else {
+                    mainActivity.setList(data.list);
                 }
-
                 read_list_is_finish = true;
                 break;
         }
     }
 
-    public boolean startReadList(final boolean is_refresh) {
+    public boolean startReadList(boolean is_refresh,boolean show_notify) {
         if (!read_list_is_finish) {
             return false;
         }
         read_list_is_finish = false;
-        final MsgHandle self = this;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Message msg = self.obtainMessage(WpListUpdate);
-                ArrayList<Map<String, String>> list = self.ac.get_list();
-                msg.obj = new ListMsgData(is_refresh, list);
-                self.sendMessage(msg);
-            }
-        }).start();
+        new Thread(new readRunnable(this,is_refresh,show_notify)).start();
         return true;
     }
 }

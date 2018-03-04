@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         if (ac.check_root()) {
             setContentView(R.layout.activity_main);
             registerWifiChange();
-            handler.startReadList(false);
+            handler.startReadList(false, false);
         } else {
             setContentView(R.layout.activity_no_root);
         }
@@ -104,12 +104,12 @@ public class MainActivity extends Activity {
         registerReceiver(new WifiReceiver(this), filter);
     }
 
-    public void refresh_list(boolean showNotify) {
-        if (log++ == 0) {
+    public void refresh_list(boolean show_notify) {
+        if (log++ == 0 || !is_root_check) {
             //first not log
             return;
         }
-        if (!handler.startReadList(true)) {
+        if (!handler.startReadList(true, show_notify)) {
             return;
         }
         if (!is_root_check) {
@@ -117,7 +117,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void refreshLvList() {
+    public void refreshLvList(ArrayList<Map<String, String>> list) {
+        if (list == null) {
+            Toast.makeText(this, getString(R.string.read_wifi_list_error), Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            if (list.size() == 0) {
+                Toast.makeText(this, getString(R.string.wifi_list_is_empty), Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                wifiAdapter.list = list;
+                lv.setAdapter(wifiAdapter);
+            }
+        }
         lv.deferNotifyDataSetChanged();
         Toast.makeText(this, getString(R.string.refresh_success), Toast.LENGTH_SHORT).show();
     }

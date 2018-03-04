@@ -45,6 +45,9 @@ public class ReadWpaCfg {
     }
 
     public void read() {
+        if (list.size() > 0) {
+            return;
+        }
         need_read_wap_config = false;
         read_xml_config();
         if (need_read_wap_config) {
