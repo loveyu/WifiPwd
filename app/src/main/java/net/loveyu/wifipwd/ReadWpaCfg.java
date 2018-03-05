@@ -33,7 +33,6 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class ReadWpaCfg {
     ArrayList<Map<String, String>> list;
-    private Process p = null;
     private String wpa_config_path;
     private String WifiConfigStore_path;
     private boolean need_read_wap_config = false;
@@ -53,18 +52,19 @@ public class ReadWpaCfg {
                 return;
             }
         }
-        need_read_wap_config = false;
-        read_xml_config();
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            need_read_wap_config = false;
+            read_xml_config();
+        } else {
+            need_read_wap_config = true;
+        }
         if (need_read_wap_config) {
             read_wpa_config();
         }
     }
 
     private Process get_su_process() throws IOException {
-        if (p == null) {
-            p = Runtime.getRuntime().exec("su");
-        }
-        return p;
+        return Runtime.getRuntime().exec("su");
     }
 
     private void read_xml_config() {
