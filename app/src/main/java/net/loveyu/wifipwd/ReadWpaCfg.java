@@ -52,6 +52,7 @@ public class ReadWpaCfg {
                 return;
             }
         }
+        list.clear();
         if (android.os.Build.VERSION.SDK_INT >= 26) {
             need_read_wap_config = false;
             read_xml_config();

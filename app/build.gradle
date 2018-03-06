@@ -7,8 +7,8 @@ android {
         applicationId "net.loveyu.wifipwd"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 9
-        versionName '1.6.2'
+        versionCode 10
+        versionName '1.6.3'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
