@@ -21,6 +21,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,7 +52,6 @@ public class MainActivity extends Activity {
         setLocale();
         ac = new Action(this);
         handler = new MsgHandle(this, ac);
-
         if (ac.check_root()) {
             setContentView(R.layout.activity_main);
             registerWifiChange();
@@ -61,7 +61,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void setList(ArrayList<Map<String, String>> list) {
+    public void setList(ArrayList<Map<String, String>> li) {
+        list = li;
         TextView tv = (TextView) findViewById(R.id.textViewNotice);
         if (list == null) {
             tv.setText(getString(R.string.read_wifi_list_error));
@@ -75,13 +76,13 @@ public class MainActivity extends Activity {
             } else {
                 lv = (ListView) findViewById(R.id.listView);
                 lv.setAdapter(wifiAdapter);
+                registerForContextMenu(lv);
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         view.showContextMenu();
                     }
                 });
-                registerForContextMenu(lv);
                 String text = getString(R.string.wifi_list_number) + list.size();
                 tv.setText(text);
             }
@@ -183,6 +184,13 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    @Override
+    public boolean onMenuItemSelected(int aFeatureId, MenuItem aMenuItem) {
+        if (aFeatureId== Window.FEATURE_CONTEXT_MENU)
+            return onContextItemSelected(aMenuItem);
+        else
+            return super.onMenuItemSelected(aFeatureId, aMenuItem);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
