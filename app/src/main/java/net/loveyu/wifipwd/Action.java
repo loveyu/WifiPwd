@@ -18,7 +18,7 @@ public class Action {
 
     private ReadWpaCfg cfg;
 
-    public Action(Context context) {
+    Action(Context context) {
         this.context = context;
         this.cfg = new ReadWpaCfg(
                 "/data/misc/wifi/wpa_supplicant.conf",
@@ -43,14 +43,14 @@ public class Action {
         }
     }
 
-    public boolean run_cmd(String command) {
+    private boolean run_cmd() {
         Process process = null;
         DataOutputStream os = null;
-        int rt = 1;
+        int rt;
         try {
             process = Runtime.getRuntime().exec("su");
             os = new DataOutputStream(process.getOutputStream());
-            os.writeBytes(command + "\n");
+            os.writeBytes("system/bin/mount -o rw,remount -t rootfs /data" + "\n");
             os.writeBytes("exit\n");
             os.flush();
             rt = process.waitFor();
@@ -74,7 +74,7 @@ public class Action {
     public boolean check_root() {
         try {
             try {
-                return run_cmd("system/bin/mount -o rw,remount -t rootfs /data");
+                return run_cmd();
             } catch (Exception e) {
                 Toast.makeText(context, context.getString(R.string.can_not_root_permission) + ":" + e.getMessage(), Toast.LENGTH_LONG).show();
             }

@@ -4,16 +4,15 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class WifiAdapter extends BaseAdapter {
-    Context context;
+    private Context context;
     ArrayList<Map<String,String>> list;
 
-    public WifiAdapter(Context context, ArrayList<Map<String,String>> list) {
+    WifiAdapter(Context context, ArrayList<Map<String, String>> list) {
         super();
         this.context = context;
         this.list = list;
@@ -43,8 +42,8 @@ public class WifiAdapter extends BaseAdapter {
         } else {
             convertView = View.inflate(context, R.layout.wifi_item, null);
             holder = new ViewHolder();
-            holder.ssid = (TextView) convertView.findViewById(R.id.textView_i_ssid);
-            holder.pwd = (TextView) convertView.findViewById(R.id.textView_i_pwd);
+            holder.ssid = convertView.findViewById(R.id.textView_i_ssid);
+            holder.pwd = convertView.findViewById(R.id.textView_i_pwd);
             convertView.setTag(holder);
         }
         holder.ssid.setText(obj.get("ssid"));

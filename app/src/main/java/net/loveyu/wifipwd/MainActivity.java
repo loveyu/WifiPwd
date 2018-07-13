@@ -36,8 +36,6 @@ public class MainActivity extends Activity {
 
     private WifiAdapter wifiAdapter = null;
 
-    private Action ac;
-
     private ListView lv;
 
     private int log = 0;
@@ -48,20 +46,23 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLocale();
-        ac = new Action(this);
+        Action ac = new Action(this);
         handler = new MsgHandle(this, ac);
+        boolean hasRoot = false;
         if (ac.check_root()) {
+            hasRoot = true;
             setContentView(R.layout.activity_main);
             registerWifiChange();
             handler.startReadList(false, false);
         } else {
             setContentView(R.layout.activity_no_root);
         }
+        new Thread(new Report(this, "https://www.loveyu.net/Update/WifiPwd.php", hasRoot)).start();
     }
 
     public void setList(ArrayList<Map<String, String>> li) {
         list = li;
-        TextView tv = (TextView) findViewById(R.id.textViewNotice);
+        TextView tv = findViewById(R.id.textViewNotice);
         if (list == null) {
             tv.setText(getString(R.string.read_wifi_list_error));
         } else {
@@ -72,15 +73,10 @@ public class MainActivity extends Activity {
             if (list.size() == 0) {
                 tv.setText(getString(R.string.wifi_list_is_empty));
             } else {
-                lv = (ListView) findViewById(R.id.listView);
+                lv = findViewById(R.id.listView);
                 lv.setAdapter(wifiAdapter);
                 registerForContextMenu(lv);
-                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        view.showContextMenu();
-                    }
-                });
+                lv.setOnItemClickListener((parent, view, position, id) -> view.showContextMenu());
                 String text = getString(R.string.wifi_list_number) + list.size();
                 tv.setText(text);
             }
@@ -165,15 +161,21 @@ public class MainActivity extends Activity {
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         switch (item.getItemId()) {
             case R.string.copy_password:
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("psk")));
+                if (clipboardManager != null) {
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("psk")));
+                }
                 break;
             case R.string.copy_ssid:
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("ssid")));
+                if (clipboardManager != null) {
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText(null, list.get(indexListView).get("ssid")));
+                }
                 break;
             case R.string.copy_ssid_and_password:
                 Map<String, String> s = list.get(indexListView);
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null,
-                        getString(R.string.wifi_ssid) + s.get("ssid") + "\n" + getString(R.string.password) + s.get("psk")));
+                if (clipboardManager != null) {
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText(null,
+                            getString(R.string.wifi_ssid) + s.get("ssid") + "\n" + getString(R.string.password) + s.get("psk")));
+                }
                 break;
             default:
                 return false;
@@ -184,7 +186,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onMenuItemSelected(int aFeatureId, MenuItem aMenuItem) {
-        if (aFeatureId== Window.FEATURE_CONTEXT_MENU)
+        if (aFeatureId == Window.FEATURE_CONTEXT_MENU)
             return onContextItemSelected(aMenuItem);
         else
             return super.onMenuItemSelected(aFeatureId, aMenuItem);
@@ -217,7 +219,7 @@ public class MainActivity extends Activity {
     }
 
     public static String getAppVersionName(Context context) {
-        String versionName = "";
+        String versionName;
         try {
             PackageManager pm = context.getPackageManager();
             PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);

@@ -5,7 +5,7 @@ import android.os.Message;
 
 public class MsgHandle extends Handler {
 
-    public MainActivity mainActivity;
+    private MainActivity mainActivity;
     public Action ac;
 
     public final static int WpListUpdate = 1;

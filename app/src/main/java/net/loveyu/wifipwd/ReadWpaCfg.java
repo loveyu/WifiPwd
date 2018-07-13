@@ -32,13 +32,13 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by loveyu on 2016/1/31.
  */
 public class ReadWpaCfg {
-    ArrayList<Map<String, String>> list;
+    private ArrayList<Map<String, String>> list;
     private String wpa_config_path;
     private String WifiConfigStore_path;
     private boolean need_read_wap_config = false;
 
     ReadWpaCfg(String wpa_supplicant_path, String WifiConfigStorePath) {
-        list = new ArrayList<Map<String, String>>();
+        list = new ArrayList<>();
         this.wpa_config_path = wpa_supplicant_path;
         this.WifiConfigStore_path = WifiConfigStorePath;
     }
@@ -197,9 +197,10 @@ public class ReadWpaCfg {
     private void add(String content) {
         content = content.substring(9, content.length() - 2);
         String[] list = content.split("\\n");
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         String k, v;
         for (String info : list) {
+            info = info.trim();
             int index = info.indexOf("=");
             if (index > -1) {
                 k = info.substring(0, index);
@@ -228,7 +229,7 @@ public class ReadWpaCfg {
         if (ssid == null || psk == null || "".equals(ssid) || psk.equals("")) {
             return;
         }
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         if (ssid.charAt(0) == '"') {
             ssid = ssid.substring(1, ssid.length() - 1);
@@ -254,7 +255,7 @@ public class ReadWpaCfg {
      * @return 返回完整的数据列表
      */
     public ArrayList<Map<String, String>> getPasswordList(Context context) {
-        ArrayList<Map<String, String>> rt = new ArrayList<Map<String, String>>();
+        ArrayList<Map<String, String>> rt = new ArrayList<>();
         for (Map<String, String> map : this.list) {
             if (map.containsKey("psk") && map.containsKey("ssid")) {
                 rt.add(map);
@@ -284,8 +285,8 @@ public class ReadWpaCfg {
     private String getCurrentSSID(Context context) {
         try {
             //读取当前链接的Wifi信息
-            WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (!mWifi.isWifiEnabled()) {
+            WifiManager mWifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (null == mWifi || !mWifi.isWifiEnabled()) {
                 //wifi 未启用
                 return "";
             }
@@ -319,9 +320,31 @@ public class ReadWpaCfg {
                 buffer[i] = (byte) Integer.parseInt(s.substring(start, start + 2), 16);
                 pos++;
             }
-            return new String(buffer, 0, pos, "UTF-8");
+            //如果当前不是UTF8编码则改为GB18030编码，兼容GBK
+            return new String(buffer, 0, pos, isValidUtf8(buffer, total) ? "UTF-8" : "GB18030");
         } catch (UnsupportedEncodingException e) {
             return null;
         }
+    }
+
+    /**
+     * 判断是否为UTF-8编码
+     *
+     * @param b         字节编码
+     * @param aMaxCount 最大数量
+     * @link https://blog.csdn.net/clbxp/article/details/6620388
+     */
+    private static boolean isValidUtf8(byte[] b, int aMaxCount) {
+        int lLen = b.length, lCharCount = 0;
+        for (int i = 0; i < lLen && lCharCount < aMaxCount; ++lCharCount) {
+            byte lByte = b[i++];//to fast operation, ++ now, ready for the following for(;;)
+            if (lByte >= 0) continue;//>=0 is normal ascii
+            if (lByte < (byte) 0xc0 || lByte > (byte) 0xfd) return false;
+            int lCount = lByte > (byte) 0xfc ? 5 : lByte > (byte) 0xf8 ? 4
+                    : lByte > (byte) 0xf0 ? 3 : lByte > (byte) 0xe0 ? 2 : 1;
+            if (i + lCount > lLen) return false;
+            for (int j = 0; j < lCount; ++j, ++i) if (b[i] >= (byte) 0xc0) return false;
+        }
+        return true;
     }
 }
