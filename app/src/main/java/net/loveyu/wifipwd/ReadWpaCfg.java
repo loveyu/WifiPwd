@@ -187,7 +187,7 @@ public class ReadWpaCfg {
     }
 
     private void parse(String content) {
-        Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n}");
+        Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n\\}");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
             add(matcher.group());
@@ -200,6 +200,7 @@ public class ReadWpaCfg {
         HashMap<String, String> map = new HashMap<>();
         String k, v;
         for (String info : list) {
+            info = info.trim();
             int index = info.indexOf("=");
             if (index > -1) {
                 k = info.substring(0, index);
@@ -319,9 +320,31 @@ public class ReadWpaCfg {
                 buffer[i] = (byte) Integer.parseInt(s.substring(start, start + 2), 16);
                 pos++;
             }
-            return new String(buffer, 0, pos, "UTF-8");
+            //如果当前不是UTF8编码则改为GB18030编码，兼容GBK
+            return new String(buffer, 0, pos, isValidUtf8(buffer, total) ? "UTF-8" : "GB18030");
         } catch (UnsupportedEncodingException e) {
             return null;
         }
+    }
+
+    /**
+     * 判断是否为UTF-8编码
+     *
+     * @param b         字节编码
+     * @param aMaxCount 最大数量
+     * @link https://blog.csdn.net/clbxp/article/details/6620388
+     */
+    private static boolean isValidUtf8(byte[] b, int aMaxCount) {
+        int lLen = b.length, lCharCount = 0;
+        for (int i = 0; i < lLen && lCharCount < aMaxCount; ++lCharCount) {
+            byte lByte = b[i++];//to fast operation, ++ now, ready for the following for(;;)
+            if (lByte >= 0) continue;//>=0 is normal ascii
+            if (lByte < (byte) 0xc0 || lByte > (byte) 0xfd) return false;
+            int lCount = lByte > (byte) 0xfc ? 5 : lByte > (byte) 0xf8 ? 4
+                    : lByte > (byte) 0xf0 ? 3 : lByte > (byte) 0xe0 ? 2 : 1;
+            if (i + lCount > lLen) return false;
+            for (int j = 0; j < lCount; ++j, ++i) if (b[i] >= (byte) 0xc0) return false;
+        }
+        return true;
     }
 }
