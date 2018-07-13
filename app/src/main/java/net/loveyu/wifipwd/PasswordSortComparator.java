@@ -1,7 +1,5 @@
 package net.loveyu.wifipwd;
 
-import android.util.Log;
-
 import java.util.Comparator;
 import java.util.Map;
 

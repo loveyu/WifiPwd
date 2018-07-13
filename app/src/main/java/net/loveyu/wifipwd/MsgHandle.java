@@ -2,12 +2,6 @@ package net.loveyu.wifipwd;
 
 import android.os.Handler;
 import android.os.Message;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class MsgHandle extends Handler {
 
