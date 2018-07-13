@@ -7,7 +7,7 @@ android {
         applicationId "net.loveyu.wifipwd"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 11
+        versionCode 12
         versionName '1.6.5'
     }
     compileOptions {
