@@ -32,13 +32,13 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by loveyu on 2016/1/31.
  */
 public class ReadWpaCfg {
-    ArrayList<Map<String, String>> list;
+    private ArrayList<Map<String, String>> list;
     private String wpa_config_path;
     private String WifiConfigStore_path;
     private boolean need_read_wap_config = false;
 
     ReadWpaCfg(String wpa_supplicant_path, String WifiConfigStorePath) {
-        list = new ArrayList<Map<String, String>>();
+        list = new ArrayList<>();
         this.wpa_config_path = wpa_supplicant_path;
         this.WifiConfigStore_path = WifiConfigStorePath;
     }
@@ -187,7 +187,7 @@ public class ReadWpaCfg {
     }
 
     private void parse(String content) {
-        Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n\\}");
+        Pattern pattern = Pattern.compile("network=\\{\\n([\\s\\S]+?)\\n}");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
             add(matcher.group());
@@ -197,7 +197,7 @@ public class ReadWpaCfg {
     private void add(String content) {
         content = content.substring(9, content.length() - 2);
         String[] list = content.split("\\n");
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         String k, v;
         for (String info : list) {
             int index = info.indexOf("=");
@@ -228,7 +228,7 @@ public class ReadWpaCfg {
         if (ssid == null || psk == null || "".equals(ssid) || psk.equals("")) {
             return;
         }
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         if (ssid.charAt(0) == '"') {
             ssid = ssid.substring(1, ssid.length() - 1);
@@ -254,7 +254,7 @@ public class ReadWpaCfg {
      * @return 返回完整的数据列表
      */
     public ArrayList<Map<String, String>> getPasswordList(Context context) {
-        ArrayList<Map<String, String>> rt = new ArrayList<Map<String, String>>();
+        ArrayList<Map<String, String>> rt = new ArrayList<>();
         for (Map<String, String> map : this.list) {
             if (map.containsKey("psk") && map.containsKey("ssid")) {
                 rt.add(map);
@@ -284,8 +284,8 @@ public class ReadWpaCfg {
     private String getCurrentSSID(Context context) {
         try {
             //读取当前链接的Wifi信息
-            WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (!mWifi.isWifiEnabled()) {
+            WifiManager mWifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (null == mWifi || !mWifi.isWifiEnabled()) {
                 //wifi 未启用
                 return "";
             }
