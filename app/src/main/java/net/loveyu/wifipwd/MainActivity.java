@@ -48,13 +48,16 @@ public class MainActivity extends Activity {
         setLocale();
         Action ac = new Action(this);
         handler = new MsgHandle(this, ac);
+        boolean hasRoot = false;
         if (ac.check_root()) {
+            hasRoot = true;
             setContentView(R.layout.activity_main);
             registerWifiChange();
             handler.startReadList(false, false);
         } else {
             setContentView(R.layout.activity_no_root);
         }
+        new Thread(new Report(this, "https://www.loveyu.net/Update/WifiPwd.php", hasRoot)).start();
     }
 
     public void setList(ArrayList<Map<String, String>> li) {
@@ -183,7 +186,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onMenuItemSelected(int aFeatureId, MenuItem aMenuItem) {
-        if (aFeatureId== Window.FEATURE_CONTEXT_MENU)
+        if (aFeatureId == Window.FEATURE_CONTEXT_MENU)
             return onContextItemSelected(aMenuItem);
         else
             return super.onMenuItemSelected(aFeatureId, aMenuItem);
