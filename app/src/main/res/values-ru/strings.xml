@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_exit">Выход</string>
+    <string name="action_help">Помощь</string>
+    <string name="already_copy">Скопировано</string>
+    <string name="app_name">Wifi Password Viewer</string>
+    <string name="can_no_read_file">Не удается прочитать файл пароля WIFI</string>
+    <string name="can_not_root_permission">Не удалось получить права root</string>
+    <string name="copy_password">Копировать пароль</string>
+    <string name="copy_ssid">Копировать имя сети</string>
+    <string name="copy_ssid_and_password">Копировать имя сети и пароль</string>
+    <string name="notice_reading">Подсказка: Wifi пароль извлекается</string>
+    <string name="open_source">Исходный код</string>
+    <string name="password">Пароль:</string>
+    <string name="read_wifi_list_error">Не удалось прочитать список, повторите попытку предоставления ROOT доступа для программы</string>
+    <string name="refresh_list">Обновить список</string>
+    <string name="refresh_success">Обновление завершено успешно</string>
+    <string name="wifi_list_is_empty">Список WIFI с паролем пуст</string>
+    <string name="wifi_list_number">Количество паролей Wifi:</string>
+    <string name="wifi_ssid">Имя сети:</string>
+</resources>
