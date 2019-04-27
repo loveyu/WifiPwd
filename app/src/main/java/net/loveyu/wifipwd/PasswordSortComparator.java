@@ -10,7 +10,7 @@ public class PasswordSortComparator implements Comparator<Map<String, String>> {
 
     private String currentSSID;
 
-    public PasswordSortComparator(String currentSSID) {
+    PasswordSortComparator(String currentSSID) {
         this.currentSSID = currentSSID;
     }
 

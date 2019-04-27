@@ -10,7 +10,7 @@ public class readRunnable implements Runnable {
     private boolean is_refresh;
     private boolean show_notify;
 
-    public readRunnable(MsgHandle handle, boolean is_refresh, boolean show_notify) {
+    readRunnable(MsgHandle handle, boolean is_refresh, boolean show_notify) {
         this.handle = handle;
         this.is_refresh = is_refresh;
         this.show_notify = show_notify;
